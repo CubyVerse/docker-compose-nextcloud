@@ -112,18 +112,18 @@ sed -i -e "s:^PHP_MEMORY_LIMIT=:PHP_MEMORY_LIMIT=${RAM}:g" .env
 UPLOAD=""
 while true; do
     # Ask user for UPLOAD allocation in GB or MB
-    read -p "Enter the amount of UPLOAD you want to allocate to PHP (e.g. 512MB or 1GB): " UPLOAD
+    read -p "Enter the amount of UPLOAD you want to allocate to PHP (e.g. 512M or 1G): " UPLOAD
 
     # Extract the numeric value and unit from the input
     NUM=$(echo $UPLOAD | grep -oE '[0-9]+')
     UNIT=$(echo $UPLOAD | grep -oE '[[:alpha:]]{2}$')
 
     # Check if unit is valid
-    if [[ $UNIT == "GB" || $UNIT == "MB" ]]; then
+    if [[ $UNIT == "G" || $UNIT == "M" ]]; then
         echo "PHP upload limit set to ${UPLOAD}."
         break
     else
-        echo "Invalid unit. Please enter a valid UPLOAD allocation in GB or MB."
+        echo "Invalid unit. Please enter a valid UPLOAD allocation in G or M."
     fi
 done
 sed -i -e "s:^PHP_UPLOAD_LIMIT=:PHP_UPLOAD_LIMIT=${UPLOAD}:g" .env
