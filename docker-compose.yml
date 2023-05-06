@@ -1,0 +1,97 @@
+services:
+  mariadb:
+    image: mariadb:latest
+    restart: always
+    command: --transaction-isolation=READ-COMMITTED --log-bin=binlog --binlog-format=ROW
+    env_file:
+      - .env
+    volumes:
+      - mariadb:/var/lib/mysql
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
+    environment:
+      - MARIADB_AUTO_UPGRADE=1
+      - MARIADB_ROOT_PASSWORD=${MARIADB_PASSWORD_ROOT}
+      - MARIADB_DATABASE=nextcloud
+      - MARIADB_USER=nextcloud
+      - MARIADB_PASSWORD=${MARIADB_PASSWORD_USER}
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+
+  redis:
+    image: redis:latest
+    restart: always
+    volumes:
+      - redis:/data
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD", "redis-cli", "PING"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+
+  software:
+    image: nextcloud:production-fpm-alpine
+    entrypoint: /bin/sh
+    command: -c "/entrypoint.sh php-fpm & /cron.sh"
+    restart: always
+    env_file:
+      - .env
+    depends_on:
+      - mariadb
+      - redis
+    volumes:
+      - software_html:/var/www/html
+      - software_data:/var/www/data
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
+    environment:
+      - NEXTCLOUD_DATA_DIR=/var/www/data
+      - NEXTCLOUD_ADMIN_USER=${NEXTCLOUD_ADMIN_USER}
+      - NEXTCLOUD_ADMIN_PASSWORD=${NEXTCLOUD_ADMIN_PASSWORD}
+      - PHP_MEMORY_LIMIT=${PHP_MEMORY_LIMIT}
+      - PHP_UPLOAD_LIMIT=${PHP_UPLOAD_LIMIT}
+      - MYSQL_HOST=mariadb
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=nextcloud
+      - MYSQL_PASSWORD=${MARIADB_PASSWORD_USER}
+      - REDIS_HOST=redis
+    networks:
+      - backend
+ 
+  nginx:
+    image: nginx:alpine
+    restart: always
+    depends_on:
+      - software
+    volumes:
+      - software_html:/var/www/html
+      - ./conf.d/nginx:/etc/nginx/conf.d
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
+    networks:
+      - backend
+      - frontend
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "-", "http://localhost/status.php"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  software_html:
+  software_data:
+  mariadb:
+  redis:
+
+networks:
+  backend:
+  frontend:
