@@ -1,4 +1,4 @@
-# docker-compose-nextcloud
+# Docker-Compose (Nextcloud)
 The repository includes a Docker Compose setup for Nextcloud with Redis, Nginx, PHP and MariaDB.
 
 ## setup
