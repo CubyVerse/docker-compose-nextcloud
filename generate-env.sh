@@ -127,7 +127,6 @@ while true; do
     fi
 done
 
-sed -i -e "s:^PHP_MEMORY_LIMIT=:PHP_MEMORY_LIMIT=${RAM}:g" .env
 sed -i -e "s:^PHP_UPLOAD_LIMIT=:PHP_UPLOAD_LIMIT=${UPLOAD}:g" .env
 
 ## Docker-Container (MariaDB)
