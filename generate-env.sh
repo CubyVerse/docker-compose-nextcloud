@@ -92,18 +92,18 @@ sed -i -e "s:^NEXTCLOUD_ADMIN_PASSWORD=:NEXTCLOUD_ADMIN_PASSWORD=${PASSWORD}:g" 
 RAM=""
 while true; do
     # Ask user for RAM allocation in GB or MB
-    read -p "Enter the amount of RAM you want to allocate to PHP (e.g. 512MB or 1GB): " RAM
+    read -p "Enter the amount of RAM you want to allocate to PHP (e.g. 512M or 1G): " RAM
 
     # Extract the numeric value and unit from the input
     NUM=$(echo $RAM | grep -oE '[0-9]+')
     UNIT=$(echo $RAM | grep -oE '[[:alpha:]]{2}$')
 
     # Check if unit is valid
-    if [[ $UNIT == "GB" || $UNIT == "MB" ]]; then
+    if [[ $UNIT == "M" || $UNIT == "G" ]]; then
         echo "PHP memory limit set to ${RAM}."
         break
     else
-        echo "Invalid unit. Please enter a valid RAM allocation in GB or MB."
+        echo "Invalid unit. Please enter a valid RAM allocation in G or M."
     fi
 done
 sed -i -e "s:^PHP_MEMORY_LIMIT=:PHP_MEMORY_LIMIT=${RAM}:g" .env
@@ -112,20 +112,22 @@ sed -i -e "s:^PHP_MEMORY_LIMIT=:PHP_MEMORY_LIMIT=${RAM}:g" .env
 UPLOAD=""
 while true; do
     # Ask user for UPLOAD allocation in GB or MB
-    read -p "Enter the amount of UPLOAD you want to allocate to PHP (e.g. 512M or 1G): " UPLOAD
+    read -p "Enter the amount of RAM you want to allocate to PHP (e.g. 512M or 1G): " UPLOAD
 
     # Extract the numeric value and unit from the input
     NUM=$(echo $UPLOAD | grep -oE '[0-9]+')
     UNIT=$(echo $UPLOAD | grep -oE '[[:alpha:]]{2}$')
 
     # Check if unit is valid
-    if [[ $UNIT == "G" || $UNIT == "M" ]]; then
+    if [[ $UNIT == "M" || $UNIT == "G" ]]; then
         echo "PHP upload limit set to ${UPLOAD}."
         break
     else
-        echo "Invalid unit. Please enter a valid UPLOAD allocation in G or M."
+        echo "Invalid unit. Please enter a valid UPLOAD limit in G or M."
     fi
 done
+
+sed -i -e "s:^PHP_MEMORY_LIMIT=:PHP_MEMORY_LIMIT=${RAM}:g" .env
 sed -i -e "s:^PHP_UPLOAD_LIMIT=:PHP_UPLOAD_LIMIT=${UPLOAD}:g" .env
 
 ## Docker-Container (MariaDB)
