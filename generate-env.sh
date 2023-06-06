@@ -96,7 +96,7 @@ while true; do
 
     # Extract the numeric value and unit from the input
     NUM=$(echo $RAM | grep -oE '[0-9]+')
-    UNIT=$(echo $RAM | grep -oE '[[:alpha:]]{2}$')
+    UNIT=$(echo $RAM | grep -oE '[[:alpha:]]{1}$')
 
     # Check if unit is valid
     if [[ $UNIT == "M" || $UNIT == "G" ]]; then
@@ -116,7 +116,7 @@ while true; do
 
     # Extract the numeric value and unit from the input
     NUM=$(echo $UPLOAD | grep -oE '[0-9]+')
-    UNIT=$(echo $UPLOAD | grep -oE '[[:alpha:]]{2}$')
+    UNIT=$(echo $UPLOAD | grep -oE '[[:alpha:]]{1}$')
 
     # Check if unit is valid
     if [[ $UNIT == "M" || $UNIT == "G" ]]; then
