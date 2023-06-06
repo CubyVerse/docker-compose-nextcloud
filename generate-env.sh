@@ -112,7 +112,7 @@ sed -i -e "s:^PHP_MEMORY_LIMIT=:PHP_MEMORY_LIMIT=${RAM}:g" .env
 UPLOAD=""
 while true; do
     # Ask user for UPLOAD allocation in GB or MB
-    read -p "Enter the amount of RAM you want to allocate to PHP (e.g. 512M or 1G): " UPLOAD
+    read -p "Enter the amount of the UPLOAD Limit you want to allocate to PHP (e.g. 512M or 1G): " UPLOAD
 
     # Extract the numeric value and unit from the input
     NUM=$(echo $UPLOAD | grep -oE '[0-9]+')
