@@ -26,7 +26,7 @@ while true; do
     echo "  2 - input your own username"
     read -p "input choice [1]: " CHOICE
     case "${CHOICE}" in
-        1)
+        1|"")
             USERNAME="administrator"
             break
             ;;
@@ -54,7 +54,7 @@ while true; do
     echo "  2 - input your own password"
     read -p "input choice [1]: " CHOICE
     case "${CHOICE}" in
-        1)
+        1|"")
             PASSWORD=$(tr -dc '[:alnum:]' < /dev/urandom | fold -w ${1:-64} | head -n 1)
             echo "Password for the user ($USERNAME): ${PASSWORD}"
             break
