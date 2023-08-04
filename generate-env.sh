@@ -131,9 +131,9 @@ sed -i -e "s:^PHP_UPLOAD_LIMIT=:PHP_UPLOAD_LIMIT=${UPLOAD}:g" .env
 
 ## Docker-Container (MariaDB)
 PASSWORD=""
-PASSWORD=$(cat /dev/urandom | tr -dc '[:alpha:]' | fold -w ${1:-64} | head -n 1)
+PASSWORD=$(tr -dc '[:alnum:]' < /dev/urandom | fold -w ${1:-64} | head -n 1)
 sed -i -e "s:^MARIADB_PASSWORD_ROOT=:MARIADB_PASSWORD_ROOT=${PASSWORD}:g" .env
 
 PASSWORD=""
-PASSWORD=$(cat /dev/urandom | tr -dc '[:alpha:]' | fold -w ${1:-64} | head -n 1)
+PASSWORD=$(tr -dc '[:alnum:]' < /dev/urandom | fold -w ${1:-64} | head -n 1)
 sed -i -e "s:^MARIADB_PASSWORD_USER=:MARIADB_PASSWORD_USER=${PASSWORD}:g" .env
