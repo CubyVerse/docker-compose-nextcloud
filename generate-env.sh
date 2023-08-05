@@ -2,7 +2,7 @@
 # Was created with the assistance of ChatGPT.
 
 # only run on linux
-if [ "$(uname)" != "Linux" ]; then
+if [ "$(uname)" != "Linux" ] && [ "$(uname)" != "Darwin" ]; then
     echo "The script only runs on Linux."
     exit 1
 fi
@@ -36,7 +36,7 @@ validate_port() {
 }
 
 is_valid_domain() {
-    if [[ "$1" =~ ^((?!-)[A-Za-z0-9-]{1,63}(?<!-)\\.)+[A-Za-z]{2,6}$ ]]; then
+    if [[ "$1" =~ ^([A-Za-z0-9-]{1,63}\.)+[A-Za-z]{2,6}$ ]]; then
         return 0 # Valid email address
     else
         return 1 # Invalid email address
@@ -91,7 +91,7 @@ while true; do
     read -rp "input choice [1]: " CHOICE
     case "${CHOICE}" in
     1 | "")
-        PASSWORD=$(tr -dc '[:alnum:]' </dev/urandom | fold -w "${1:-64}" | head -n 1)
+        PASSWORD=$(LC_CTYPE=C tr -dc '[:alnum:]' </dev/urandom | fold -w "${1:-64}" | head -n 1)
         echo "Password for the user ($USERNAME): ${PASSWORD}"
         break
         ;;
@@ -168,11 +168,11 @@ sed -i -e "s:^PHP_UPLOAD_LIMIT=:PHP_UPLOAD_LIMIT=${UPLOAD}:g" .env
 
 ## Docker-Container (MariaDB)
 PASSWORD=""
-PASSWORD=$(tr -dc '[:alnum:]' </dev/urandom | fold -w "${1:-64}" | head -n 1)
+PASSWORD=$(LC_CTYPE=C tr -dc '[:alnum:]' </dev/urandom | fold -w "${1:-64}" | head -n 1)
 sed -i -e "s:^MARIADB_PASSWORD_ROOT=:MARIADB_PASSWORD_ROOT=${PASSWORD}:g" .env
 
 PASSWORD=""
-PASSWORD=$(tr -dc '[:alnum:]' </dev/urandom | fold -w "${1:-64}" | head -n 1)
+PASSWORD=$(LC_CTYPE=C tr -dc '[:alnum:]' </dev/urandom | fold -w "${1:-64}" | head -n 1)
 sed -i -e "s:^MARIADB_PASSWORD_USER=:MARIADB_PASSWORD_USER=${PASSWORD}:g" .env
 
 # SMTP
