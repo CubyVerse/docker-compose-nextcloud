@@ -31,5 +31,3 @@ We welcome contributions from the community. To contribute, follow these steps:
 2. Create a new branch.
 3. Make your enhancements or fixes.
 4. Submit a pull request.
-
-If you find it helpful, don't forget to star the repository. Thank you for using our project and happy coding!
