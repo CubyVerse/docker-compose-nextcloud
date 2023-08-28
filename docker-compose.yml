@@ -7,8 +7,8 @@ services:
       - .env
     volumes:
       - mariadb:/var/lib/mysql
-      - "/etc/timezone:/etc/timezone:ro"
-      - "/etc/localtime:/etc/localtime:ro"
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
     environment:
       - MARIADB_AUTO_UPGRADE=1
       - MARIADB_ROOT_PASSWORD=${MARIADB_PASSWORD_ROOT}
@@ -18,7 +18,7 @@ services:
     networks:
       - backend
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test: [CMD, mysqladmin, ping, -h, localhost]
       interval: 60s
       timeout: 10s
       retries: 3
@@ -28,12 +28,12 @@ services:
     restart: always
     volumes:
       - redis:/data
-      - "/etc/timezone:/etc/timezone:ro"
-      - "/etc/localtime:/etc/localtime:ro"
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
     networks:
       - backend
     healthcheck:
-      test: ["CMD", "redis-cli", "PING"]
+      test: [CMD, redis-cli, PING]
       interval: 60s
       timeout: 10s
       retries: 3
@@ -51,8 +51,8 @@ services:
     volumes:
       - software_html:/var/www/html
       - software_data:/var/www/data
-      - "/etc/timezone:/etc/timezone:ro"
-      - "/etc/localtime:/etc/localtime:ro"
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
     environment:
       - NEXTCLOUD_DATA_DIR=/var/www/data
       - NEXTCLOUD_ADMIN_USER=${NEXTCLOUD_ADMIN_USER}
@@ -75,23 +75,23 @@ services:
     volumes:
       - software_html:/var/www/html
       - ./conf.d/nginx:/etc/nginx/conf.d
-      - "/etc/timezone:/etc/timezone:ro"
-      - "/etc/localtime:/etc/localtime:ro"
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
     networks:
       - backend
       - frontend
     healthcheck:
-      test: ["CMD", "wget", "-q", "-O", "-", "http://localhost/status.php"]
+      test: [CMD, wget, -q, -O, -, http://localhost/status.php]
       interval: 60s
       timeout: 10s
       retries: 3
 
 volumes:
-  software_html:
-  software_data:
-  mariadb:
-  redis:
+  software_html: true
+  software_data: true
+  mariadb: true
+  redis: true
 
 networks:
-  backend:
-  frontend:
+  backend: true
+  frontend: true

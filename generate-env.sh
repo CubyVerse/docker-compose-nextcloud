@@ -2,7 +2,7 @@
 # Was created with the assistance of ChatGPT.
 
 # only run on linux
-if [ "$(uname)" != "Linux" ] && [ "$(uname)" != "Darwin" ]; then
+if [[ "$(uname || true)" != "Linux" ]] && [[ "$(uname || true)" != "Darwin" ]]; then
     echo "The script only runs on Linux."
     exit 1
 fi
@@ -44,9 +44,9 @@ is_valid_domain() {
 }
 
 # ask the user if .env already exists
-if [ -f .env ]; then
+if [[ -f .env ]]; then
     read -rp "Environment already defined. Do you want to overwrite it? (y/[n]) " CHOICE
-    if [ "$CHOICE" != "y" ]; then
+    if [[ "${CHOICE}" != "y" ]]; then
         exit 1
     fi
 fi
@@ -68,8 +68,8 @@ while true; do
         ;;
     2)
         read -rp "Please provide a valid username (special-characters: -_): " USERNAME
-        if [[ "$USERNAME" =~ ^[a-zA-Z0-9_-]+$ ]]; then
-            echo "Username for the admin-user: $USERNAME"
+        if [[ "${USERNAME}" =~ ^[a-zA-Z0-9_-]+$ ]]; then
+            echo "Username for the admin-user: ${USERNAME}"
             break
         else
             echo "Invalid username. Please try again."
@@ -91,8 +91,8 @@ while true; do
     read -rp "input choice [1]: " CHOICE
     case "${CHOICE}" in
     1 | "")
-        PASSWORD=$(LC_CTYPE=C tr -dc '[:alnum:]' </dev/urandom | fold -w "${1:-64}" | head -n 1)
-        echo "Password for the user ($USERNAME): ${PASSWORD}"
+        PASSWORD=$( ( LC_CTYPE=C tr -dc '[:alnum:]' </dev/urandom || true ) | ( fold -w "${1:-64}" ||true ) | head -n 1)
+        echo "Password for the user (${USERNAME}): ${PASSWORD}"
         break
         ;;
     2)
@@ -100,20 +100,20 @@ while true; do
         IFS= read -r PASSWORD
 
         LEN=${#PASSWORD}
-        LOWER=$(echo "$PASSWORD" | grep -o '[a-z]' | wc -l)
-        UPPER=$(echo "$PASSWORD" | grep -o '[A-Z]' | wc -l)
-        SPECIAL=$(echo "$PASSWORD" | grep -o '[^a-zA-Z0-9]' | wc -l)
+        LOWER=$(echo "${PASSWORD}" | ( grep -o '[a-z]' || true ) | wc -l)
+        UPPER=$(echo "${PASSWORD}}" | ( grep -o '[A-Z]' || true ) | wc -l)
+        SPECIAL=$(echo "${PASSWORD}" | ( grep -o '[^a-zA-Z0-9]' || true ) | wc -l)
 
-        if [ "$LEN" -lt 16 ]; then
+        if [[ "${LEN}" -lt 16 ]]; then
             echo "The password is shorter than 16 characters."
-        elif [ "$LOWER" -lt 3 ]; then
+        elif [[ "${LOWER}" -lt 3 ]]; then
             echo "The does not contain at least 3 lowercase letters."
-        elif [ "$UPPER" -lt 3 ]; then
+        elif [[ "${UPPER}" -lt 3 ]]; then
             echo "The does not contain at least 3 uppercase letters."
-        elif [ "$SPECIAL" -lt 3 ]; then
+        elif [[ "${SPECIAL}" -lt 3 ]]; then
             echo "The does not contain at least 3 special characters."
         else
-            echo "Password for the user ($USERNAME): ${PASSWORD}"
+            echo "Password for the user (${USERNAME}): ${PASSWORD}"
             break
         fi
         ;;
@@ -131,11 +131,11 @@ while true; do
     read -rp "Enter the amount of RAM you want to allocate to PHP (e.g. 512M or 1G): " RAM
 
     # Extract the numeric value and unit from the input
-    NUM=$(echo "$RAM" | grep -oE '[0-9]+')
-    UNIT=$(echo "$RAM" | grep -oE '[[:alpha:]]{1}$')
+    NUM=$(echo "${RAM}" | grep -oE '[0-9]+')
+    UNIT=$(echo "${RAM}" | grep -oE '[[:alpha:]]{1}$')
 
     # Check if unit is valid
-    if [[ $UNIT == "M" || $UNIT == "G" ]]; then
+    if [[ ${UNIT} == "M" || ${UNIT} == "G" ]]; then
         echo "PHP memory limit set to ${RAM}."
         break
     else
@@ -151,12 +151,12 @@ while true; do
     read -rp "Enter the amount of the UPLOAD Limit you want to allocate to PHP (e.g. 512M or 1G): " UPLOAD
 
     # Extract the numeric value and unit from the input
-    NUM=$(echo "$UPLOAD" | grep -oE '[0-9]+')
-    UNIT=$(echo "$UPLOAD" | grep -oE '[[:alpha:]]{1}$')
+    NUM=$(echo "${UPLOAD}" | grep -oE '[0-9]+')
+    UNIT=$(echo "${UPLOAD}" | grep -oE '[[:alpha:]]{1}$')
 
     # Check if unit is valid
-    if [[ $UNIT == "M" || $UNIT == "G" ]]; then
-        UPLOAD="$NUM$UNIT"
+    if [[ ${UNIT} == "M" || ${UNIT} == "G" ]]; then
+        UPLOAD="${NUM}${UNIT}"
         echo "PHP upload limit set to ${UPLOAD}."
         break
     else
@@ -168,22 +168,23 @@ sed -i -e "s:^PHP_UPLOAD_LIMIT=:PHP_UPLOAD_LIMIT=${UPLOAD}:g" .env
 
 ## Docker-Container (MariaDB)
 PASSWORD=""
-PASSWORD=$(LC_CTYPE=C tr -dc '[:alnum:]' </dev/urandom | fold -w "${1:-64}" | head -n 1)
+PASSWORD=$( ( LC_CTYPE=C tr -dc '[:alnum:]' </dev/urandom || true ) | ( fold -w "${1:-64}" || true ) | head -n 1)
 sed -i -e "s:^MARIADB_PASSWORD_ROOT=:MARIADB_PASSWORD_ROOT=${PASSWORD}:g" .env
 
 PASSWORD=""
-PASSWORD=$(LC_CTYPE=C tr -dc '[:alnum:]' </dev/urandom | fold -w "${1:-64}" | head -n 1)
+PASSWORD=$( ( LC_CTYPE=C tr -dc '[:alnum:]' </dev/urandom || true ) | ( fold -w "${1:-64}" || true ) | head -n 1)
 sed -i -e "s:^MARIADB_PASSWORD_USER=:MARIADB_PASSWORD_USER=${PASSWORD}:g" .env
 
 # SMTP
 read -rp "Do you want to configure sending emails? ([y]/n):" SMTP
-if [ "$SMTP" != "n" ]; then
+if [[ "${SMTP}" != "n
+" ]]; then
     # Enter username and email address
     read -rp "Enter your username: " SMTP_NAME
     # Validating the input email address
     while true; do
         read -rp "Enter your email address: " SMTP_NAME
-        if is_valid_email "$SMTP_NAME"; then break; fi
+        if is_valid_email "${SMTP_NAME}"; then break; fi
         echo "Invalid email address. Please try again."
     done
 
@@ -199,10 +200,10 @@ if [ "$SMTP" != "n" ]; then
     echo "3. SSL/TLS encryption"
     read -rp "Enter the number of the desired connection method (default is 2): " encryption_option
     # Setting default option if input is empty
-    if [ -z "$encryption_option" ]; then
+    if [[ -z "${encryption_option}" ]]; then
         encryption_option=2
     fi
-    while [[ ! "$encryption_option" =~ ^[1-3]$ ]]; do
+    while [[ ! "${encryption_option}" =~ ^[1-3]$ ]]; do
         echo "Invalid selection. Please try again."
         read -rp "Enter the number of the desired connection method (default is 2): " encryption_option
     done
@@ -218,26 +219,30 @@ if [ "$SMTP" != "n" ]; then
         default_port="465"
         SMTP_SECURE=ssl
         ;;
+    *)
+        echo "Invalid selection. Exiting."
+        exit 1
+        ;;
     esac
-    read -rp "Enter the port number of the SMTP server (default is $default_port): " SMTP_PORT
+    read -rp "Enter the port number of the SMTP server (default is ${default_port}): " SMTP_PORT
     # Setting default port if input is empty
-    if [ -z "$SMTP_PORT" ]; then
-        SMTP_PORT=$default_port
+    if [[ -z "${SMTP_PORT}" ]]; then
+        SMTP_PORT=${default_port}
     fi
     # Validating the port number
-    while ! validate_port "$SMTP_PORT"; do
+    while ! validate_port "${SMTP_PORT}"; do
         echo "Invalid port number. Please try again."
-        read -rp "Enter the port number of the SMTP server (default is $default_port): " SMTP_PORT
+        read -rp "Enter the port number of the SMTP server (default is ${default_port}): " SMTP_PORT
     done
 
     echo "Now for the sender of system mails and notifications."
     read -rp "Please enter the username of the sender address (default: nextcloud): " MAIL_FROM_ADDRESS
-    if [ -z "$MAIL_FROM_ADDRESS" ]; then
+    if [[ -z "${MAIL_FROM_ADDRESS}" ]]; then
         MAIL_FROM_ADDRESS="nextcloud"
     fi
     while true; do
         read -rp "Please enter the domain of the sender address (default: example.com): " MAIL_DOMAIN
-        if is_valid_domain "$MAIL_DOMAIN"; then
+        if is_valid_domain "${MAIL_DOMAIN}"; then
             break
         fi
         echo "Invalid domain name. please try again."
@@ -246,13 +251,13 @@ if [ "$SMTP" != "n" ]; then
     cat - <<EOF >>.env
 
 # SMTP
-SMTP_HOST="$SMTP_HOST"
-SMTP_SECURE="$SMTP_SECURE"
-SMTP_PORT="$SMTP_PORT"
-SMTP_NAME="$SMTP_NAME"
-SMTP_PASSWORD="$SMTP_PASSWORD"
-MAIL_DOMAIN="$MAIL_DOMAIN"
-MAIL_FROM_ADDRESS="$MAIL_FROM_ADDRESS"
+SMTP_HOST="${SMTP_HOST}"
+SMTP_SECURE="${SMTP_SECURE}"
+SMTP_PORT="${SMTP_PORT}"
+SMTP_NAME="${SMTP_NAME}"
+SMTP_PASSWORD="${SMTP_PASSWORD}"
+MAIL_DOMAIN="${MAIL_DOMAIN}"
+MAIL_FROM_ADDRESS="${MAIL_FROM_ADDRESS}"
 EOF
 
 fi
