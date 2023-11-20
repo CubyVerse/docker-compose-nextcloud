@@ -11,7 +11,7 @@ Before you begin, ensure you have the following prerequisites:
 
 ## Installation
 
-1. Clone this repository using the following command: `git clone https://github.com/JDLLeu/docker-compose-nextcloud`
+1. Clone this repository using the following command: `git clone https://github.com/CubyVerse/docker-compose-nextcloud`
 2. Change into the project directory: `cd docker-compose-nextcloud`
 
 ## Usage
