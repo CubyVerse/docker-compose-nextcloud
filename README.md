@@ -26,7 +26,7 @@ Before you begin, ensure you have the following prerequisites:
 
 You can customize the project configuration by modifying the `.env` file. This file contains various environment variables that control the behavior of the application.
 
-If you want you can added these lines into the nextcloud file (config.php):
+If you want you can add these lines into the nextcloud file (config.php):
 ```
 'skeletondirectory' => '',
 'allow_user_to_change_display_name' => false,
