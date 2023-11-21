@@ -32,9 +32,9 @@ If you want you can add these lines into the nextcloud file (config.php):
 'allow_user_to_change_display_name' => false,
 'auto_logout' => true,
 'auth.bruteforce.protection.enabled' => true,
-'default_language' => 'de',
-'default_locale' => 'de_DE',
-'default_phone_region' => 'DE',
+'default_language' => '',
+'default_locale' => '',
+'default_phone_region' => '',
 'knowledgebaseenabled' => false,
 ```
 
