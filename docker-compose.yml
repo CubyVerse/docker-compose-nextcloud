@@ -87,11 +87,11 @@ services:
       retries: 3
 
 volumes:
-  software_html: true
-  software_data: true
-  mariadb: true
-  redis: true
+  software_html:
+  software_data:
+  mariadb:
+  redis:
 
 networks:
-  backend: true
-  frontend: true
+  backend:
+  frontend:
